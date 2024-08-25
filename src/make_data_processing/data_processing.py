@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+import pickle
 
 def load_data(path_to_dataset_folder, dataset_file):
     df = pd.read_csv(path_to_dataset_folder+"\\"+dataset_file)
@@ -67,15 +68,18 @@ def data_processing(df: pd.DataFrame) :
     return df
 
 
-def save_data_processing() :
-    # TO DO ...
+def save_data_processing(X_train, X_test, Y_train, Y_test) :
+    with open('.\\files\\data.pickle', 'wb') as handle:
+        pickle.dump((X_train, X_test, Y_train, Y_test), handle, protocol=pickle.HIGHEST_PROTOCOL)
     return None
 
 
 def run_data_processing():
-    # TO DO//TO CORRECT .... 
-    # Correct load_data call and data_processing call
-    data = load_data()
+    # Correct data_processing call
+    path_to_dataset_folder = "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
+    train_file = "train.csv"
+    
+    data = load_data(path_to_dataset_folder, train_file)
     X_train, X_valid, y_train, y_valid = split_data(data)
-    X_train, X_valid = data_processing(X_train, X_valid)
+    X_train, X_valid = data_processing(X_train), data_processing(X_valid)
     save_data_processing(X_train, X_valid, y_train, y_valid)
