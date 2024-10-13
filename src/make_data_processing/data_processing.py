@@ -46,7 +46,6 @@ def data_processing(df: pd.DataFrame) :
 
     for col in ('GarageYrBlt', 'GarageArea', 'GarageCars'):
         df[col] = df[col].fillna(0)
-        return None
 
     for col in ('BsmtQual', 'BsmtCond', 'BsmtFinType1'):
         df[col] = df[col].fillna('None')
@@ -59,11 +58,15 @@ def data_processing(df: pd.DataFrame) :
     
     df['GrLivArea'] = np.log(df['GrLivArea'])
     
-    df['HasBsmt'] = pd.Series(len(df['TotalBsmtSF']), index=df.index)
+    # df['HasBsmt'] = pd.Series(len(df['TotalBsmtSF']), index=df.index)
     df['HasBsmt'] = 0 
-    df.loc[df['TotalBsmtSF']>0,'HasBsmt'] = 1
+    df.loc[df['TotalBsmtSF'] > 0,'HasBsmt'] = 1
+    
+    # Convert TotalBsmtSF to float if it is not already
+    df['TotalBsmtSF'] = df['TotalBsmtSF'].astype(float)
 
-    df.loc[df['HasBsmt']==1,'TotalBsmtSF'] = np.log(df['TotalBsmtSF'])
+    # df.loc[df['HasBsmt']==1,'TotalBsmtSF'] = np.log(df['TotalBsmtSF'])
+    df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'] = np.log(df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'])
     
     return df
 
@@ -83,3 +86,4 @@ def run_data_processing():
     X_train, X_valid, y_train, y_valid = split_data(data)
     X_train, X_valid = data_processing(X_train), data_processing(X_valid)
     save_data_processing(X_train, X_valid, y_train, y_valid)
+    print("Train data saved successfully!")
