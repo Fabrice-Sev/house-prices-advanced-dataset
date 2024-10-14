@@ -68,6 +68,8 @@ def data_processing(df: pd.DataFrame) :
     # df.loc[df['HasBsmt']==1,'TotalBsmtSF'] = np.log(df['TotalBsmtSF'])
     df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'] = np.log(df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'])
     
+    if "Id" in df.columns:
+        df.drop(columns="Id", inplace= True)
     return df
 
 
