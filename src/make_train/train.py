@@ -61,7 +61,7 @@ def train(model_pipeline, X_train, Y_train, model_params) -> None:
 
     # Define an artifact path that the model will be saved to.
     # artifact_path = name_of_algorithm_used_in_pipeline
-    artifact_path = name_of_algorithm_used_in_pipeline + "_model"
+    artifact_path = "model"
     
     # Initiate the MLflow run context
     with mlflow.start_run(run_name=run_name):
