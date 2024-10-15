@@ -64,6 +64,15 @@ def data_processing(df: pd.DataFrame) :
     
     # Convert TotalBsmtSF to float if it is not already
     df['TotalBsmtSF'] = df['TotalBsmtSF'].astype(float)
+    
+    # To handle column types that disturb during inference
+    df['BsmtFinSF1'] = df['BsmtFinSF1'].astype(float)
+    df['BsmtFinSF2'] = df['BsmtFinSF2'].astype(float)
+    df['BsmtUnfSF'] = df['BsmtUnfSF'].astype(float)
+    df['BsmtFullBath'] = df['BsmtFullBath'].astype(float)
+    df['BsmtHalfBath'] = df['BsmtHalfBath'].astype(float)
+    df['GarageCars'] = df['GarageCars'].astype(float)
+    df['GarageArea'] = df['GarageArea'].astype(float)
 
     # df.loc[df['HasBsmt']==1,'TotalBsmtSF'] = np.log(df['TotalBsmtSF'])
     df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'] = np.log(df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'])
@@ -74,7 +83,8 @@ def data_processing(df: pd.DataFrame) :
 
 
 def save_data_processing(X_train, X_test, Y_train, Y_test) :
-    with open('.\\files\\data.pickle', 'wb') as handle:
+    path_processed_train_data = '.\\files\\data.pickle'
+    with open(path_processed_train_data, 'wb') as handle:
         pickle.dump((X_train, X_test, Y_train, Y_test), handle, protocol=pickle.HIGHEST_PROTOCOL)
     return None
 
