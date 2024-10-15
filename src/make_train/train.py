@@ -57,10 +57,11 @@ def train(model_pipeline, X_train, Y_train, model_params) -> None:
     # If this is not set, a unique name will be auto-generated for your run.
     # Note that the model here is a pipeline. If it is directly the model, then the following line will break 
     name_of_algorithm_used_in_pipeline = list(model_pipeline.named_steps) [len(list(model_pipeline.named_steps))-1]
-    run_name = "adv_house_pred_run_"+name_of_algorithm_used_in_pipeline+str(uuid.uuid4())[:8]
+    run_name = name_of_algorithm_used_in_pipeline+str(uuid.uuid4())[:8]
 
     # Define an artifact path that the model will be saved to.
-    artifact_path = name_of_algorithm_used_in_pipeline + "_model_for_house_pricing"
+    # artifact_path = name_of_algorithm_used_in_pipeline
+    artifact_path = name_of_algorithm_used_in_pipeline + "_model"
     
     # Initiate the MLflow run context
     with mlflow.start_run(run_name=run_name):
@@ -82,7 +83,6 @@ def train(model_pipeline, X_train, Y_train, model_params) -> None:
             artifact_path=artifact_path,
             signature=signature,
             input_example=X_train.sample(3, random_state=111),
-            # registered_model_name=collaboratif_filtering_type+"_recommendation_model",
         )
         log_metrics(model=model_pipeline, data_set=X_train, Y_expected=Y_train)
         mlflow.end_run()
@@ -110,7 +110,7 @@ def prepare_model_pipeline(df: pd.DataFrame, model, model_params: dict):
     
     pipeline = Pipeline([
     ('preprocessor', preprocessor), 
-    ("model", model(**model_params))
+    (model().__class__.__name__, model(**model_params))
     ])
     
     return pipeline
