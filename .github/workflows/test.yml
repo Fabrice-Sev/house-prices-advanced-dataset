@@ -3,7 +3,7 @@ on: [push]
 
 
 jobs:
-    test:
+    Run_Tests:
         runs-on: windows-latest
         steps:
             - name: Checkout code
