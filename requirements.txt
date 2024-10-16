@@ -31,7 +31,6 @@ azureml-dataprep==5.1.6
 azureml-dataprep-native==41.0.0
 azureml-dataprep-rslex==2.22.2
 azureml-dataset-runtime==1.57.0
-azureml-mlflow==1.57.0
 azureml-pipeline==1.57.0
 azureml-pipeline-core==1.57.0
 azureml-pipeline-steps==1.57.0
