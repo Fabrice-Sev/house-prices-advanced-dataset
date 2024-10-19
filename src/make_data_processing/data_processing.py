@@ -1,18 +1,22 @@
 # from conf import config
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
 import pickle
 
-PATH_PROCESSED_TRAIN_DATA = '.\\files\\data.pickle'
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
-def load_data(path_to_dataset_folder: str, dataset_file: str) -> pd.DataFrame: 
-    df = pd.read_csv(path_to_dataset_folder+"\\"+dataset_file)
+PATH_PROCESSED_TRAIN_DATA = ".\\files\\data.pickle"
+
+
+def load_data(path_to_dataset_folder: str, dataset_file: str) -> pd.DataFrame:
+    df = pd.read_csv(path_to_dataset_folder + "\\" + dataset_file)
     return df
 
 
 def split_data(df: pd.DataFrame) -> tuple:
-    X_train, X_test, Y_train, Y_test = train_test_split(df.iloc[:,:-1], df.iloc[:,-1:], test_size=0.2)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        df.iloc[:, :-1], df.iloc[:, -1:], test_size=0.2
+    )
     return X_train, X_test, Y_train, Y_test
 
 
@@ -20,7 +24,8 @@ def data_processing(df: pd.DataFrame) -> pd.DataFrame:
     # Here we will handle missing variables and transformations on the dataset
     # This will be to handle na_values for LotFrontage
     df["LotFrontage"] = df.groupby("Neighborhood")["LotFrontage"].transform(
-        lambda x: x.fillna(x.median()))
+        lambda x: x.fillna(x.median())
+    )
 
     # This will be to handle na_values for MasVnrArea
     df["MasVnrArea"] = df["MasVnrArea"].fillna(0)
@@ -46,54 +51,62 @@ def data_processing(df: pd.DataFrame) -> pd.DataFrame:
 
     df["MasVnrType"] = df["MasVnrType"].fillna("None")
 
-    for col in ('GarageYrBlt', 'GarageArea', 'GarageCars'):
+    for col in ("GarageYrBlt", "GarageArea", "GarageCars"):
         df[col] = df[col].fillna(0)
 
-    for col in ('BsmtQual', 'BsmtCond', 'BsmtFinType1'):
-        df[col] = df[col].fillna('None')
-        
-    for col in ('GarageType', 'GarageFinish', 'GarageQual', 'GarageCond'):
-        df[col] = df[col].fillna('None')
-    
-    if 'SalePrice' in df.columns:
-        df['SalePrice'] = np.log(df['SalePrice'])
-    
-    df['GrLivArea'] = np.log(df['GrLivArea'])
-    
+    for col in ("BsmtQual", "BsmtCond", "BsmtFinType1"):
+        df[col] = df[col].fillna("None")
+
+    for col in ("GarageType", "GarageFinish", "GarageQual", "GarageCond"):
+        df[col] = df[col].fillna("None")
+
+    if "SalePrice" in df.columns:
+        df["SalePrice"] = np.log(df["SalePrice"])
+
+    df["GrLivArea"] = np.log(df["GrLivArea"])
+
     # df['HasBsmt'] = pd.Series(len(df['TotalBsmtSF']), index=df.index)
-    df['HasBsmt'] = 0 
-    df.loc[df['TotalBsmtSF'] > 0,'HasBsmt'] = 1
-    
+    df["HasBsmt"] = 0
+    df.loc[df["TotalBsmtSF"] > 0, "HasBsmt"] = 1
+
     # Convert TotalBsmtSF to float if it is not already
-    df['TotalBsmtSF'] = df['TotalBsmtSF'].astype(float)
-    
+    df["TotalBsmtSF"] = df["TotalBsmtSF"].astype(float)
+
     # To handle column types that disturb during inference
-    df['BsmtFinSF1'] = df['BsmtFinSF1'].astype(float)
-    df['BsmtFinSF2'] = df['BsmtFinSF2'].astype(float)
-    df['BsmtUnfSF'] = df['BsmtUnfSF'].astype(float)
-    df['BsmtFullBath'] = df['BsmtFullBath'].astype(float)
-    df['BsmtHalfBath'] = df['BsmtHalfBath'].astype(float)
-    df['GarageCars'] = df['GarageCars'].astype(float)
-    df['GarageArea'] = df['GarageArea'].astype(float)
+    df["BsmtFinSF1"] = df["BsmtFinSF1"].astype(float)
+    df["BsmtFinSF2"] = df["BsmtFinSF2"].astype(float)
+    df["BsmtUnfSF"] = df["BsmtUnfSF"].astype(float)
+    df["BsmtFullBath"] = df["BsmtFullBath"].astype(float)
+    df["BsmtHalfBath"] = df["BsmtHalfBath"].astype(float)
+    df["GarageCars"] = df["GarageCars"].astype(float)
+    df["GarageArea"] = df["GarageArea"].astype(float)
 
     # df.loc[df['HasBsmt']==1,'TotalBsmtSF'] = np.log(df['TotalBsmtSF'])
-    df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'] = np.log(df.loc[df['HasBsmt'] == 1, 'TotalBsmtSF'])
-    
+    df.loc[df["HasBsmt"] == 1, "TotalBsmtSF"] = np.log(
+        df.loc[df["HasBsmt"] == 1, "TotalBsmtSF"]
+    )
+
     if "Id" in df.columns:
-        df.drop(columns="Id", inplace= True)
+        df.drop(columns="Id", inplace=True)
     return df
 
 
-def save_data_processing(X_train:pd.DataFrame, X_test:pd.DataFrame, Y_train:pd.Series, Y_test:pd.Series) -> None:
-    with open(PATH_PROCESSED_TRAIN_DATA, 'wb') as handle:
-        pickle.dump((X_train, X_test, Y_train, Y_test), handle, protocol=pickle.HIGHEST_PROTOCOL)
+def save_data_processing(
+    X_train: pd.DataFrame, X_test: pd.DataFrame, Y_train: pd.Series, Y_test: pd.Series
+) -> None:
+    with open(PATH_PROCESSED_TRAIN_DATA, "wb") as handle:
+        pickle.dump(
+            (X_train, X_test, Y_train, Y_test), handle, protocol=pickle.HIGHEST_PROTOCOL
+        )
 
 
 def run_data_processing() -> None:
     # Correct data_processing call
-    path_to_dataset_folder = "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
+    path_to_dataset_folder = (
+        "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
+    )
     train_file = "train.csv"
-    
+
     data = load_data(path_to_dataset_folder, train_file)
     X_train, X_valid, y_train, y_valid = split_data(data)
     X_train, X_valid = data_processing(X_train), data_processing(X_valid)
