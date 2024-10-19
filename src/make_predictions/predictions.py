@@ -9,14 +9,15 @@ from mlflow import MlflowClient
 
 TRACKING_URI = "http://127.0.0.1:8080/"
 TARGET_COLUMN = "SalePrice"
+PATH_OUTPUT_PREDICTIONS = '.\\files\\test_predictions.csv'
 
 
-def get_test_data(path_to_dataset_folder, dataset_file) :
+def get_test_data(path_to_dataset_folder:str, dataset_file:str) -> pd.DataFrame:
     df = pd.read_csv(path_to_dataset_folder+"\\"+dataset_file)
     return df
 
 
-def make_data_processing(df_test: pd.DataFrame) :
+def make_data_processing(df_test: pd.DataFrame) -> pd.DataFrame:
     df_cat = df_test.select_dtypes(include = ['O'])
     df_num = df_test.select_dtypes(include = ['float64', 'int64'])
     categorical_features = list(df_cat.columns)
@@ -100,7 +101,7 @@ def make_data_processing(df_test: pd.DataFrame) :
     return new_df_test
 
 
-def make_predictions(df_test, model_name:str="xgb_model") :
+def make_predictions(df_test: pd.DataFrame, model_name:str="xgb_model") -> pd.DataFrame:
     mlflow.set_tracking_uri(TRACKING_URI)
     client = MlflowClient()
     
@@ -121,13 +122,11 @@ def make_predictions(df_test, model_name:str="xgb_model") :
     return Y_predict
 
 
-def save_predictions(predictions: pd.DataFrame) :
-    path_output_predictions = '.\\files\\test_predictions.csv'
-    predictions.to_csv(path_output_predictions, index=False)
-    return None
+def save_predictions(predictions: pd.DataFrame) -> None:
+    predictions.to_csv(PATH_OUTPUT_PREDICTIONS, index=False)
 
 
-def run_make_predictions():
+def run_make_predictions() -> None:
     path_to_dataset_folder = "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
     test_file = "test.csv"
     

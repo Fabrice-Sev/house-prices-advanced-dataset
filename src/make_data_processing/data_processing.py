@@ -4,17 +4,19 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import pickle
 
-def load_data(path_to_dataset_folder, dataset_file):
+PATH_PROCESSED_TRAIN_DATA = '.\\files\\data.pickle'
+
+def load_data(path_to_dataset_folder: str, dataset_file: str) -> pd.DataFrame: 
     df = pd.read_csv(path_to_dataset_folder+"\\"+dataset_file)
     return df
 
 
-def split_data(df: pd.DataFrame) :
+def split_data(df: pd.DataFrame) -> tuple:
     X_train, X_test, Y_train, Y_test = train_test_split(df.iloc[:,:-1], df.iloc[:,-1:], test_size=0.2)
     return X_train, X_test, Y_train, Y_test
 
 
-def data_processing(df: pd.DataFrame) :
+def data_processing(df: pd.DataFrame) -> pd.DataFrame:
     # Here we will handle missing variables and transformations on the dataset
     # This will be to handle na_values for LotFrontage
     df["LotFrontage"] = df.groupby("Neighborhood")["LotFrontage"].transform(
@@ -82,14 +84,12 @@ def data_processing(df: pd.DataFrame) :
     return df
 
 
-def save_data_processing(X_train, X_test, Y_train, Y_test) :
-    path_processed_train_data = '.\\files\\data.pickle'
-    with open(path_processed_train_data, 'wb') as handle:
+def save_data_processing(X_train:pd.DataFrame, X_test:pd.DataFrame, Y_train:pd.Series, Y_test:pd.Series) -> None:
+    with open(PATH_PROCESSED_TRAIN_DATA, 'wb') as handle:
         pickle.dump((X_train, X_test, Y_train, Y_test), handle, protocol=pickle.HIGHEST_PROTOCOL)
-    return None
 
 
-def run_data_processing():
+def run_data_processing() -> None:
     # Correct data_processing call
     path_to_dataset_folder = "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
     train_file = "train.csv"

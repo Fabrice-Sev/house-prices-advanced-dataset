@@ -13,13 +13,13 @@ import xgboost as xgb
 from sklearn.ensemble import RandomForestRegressor
 
 
-def get_processed_data():
+def get_processed_data() -> tuple:
     with open('.\\files\\data.pickle', 'rb') as handle:
         X_train, X_test, Y_train, Y_test = pickle.load(handle)
     return X_train, X_test, Y_train, Y_test
 
 
-def log_metrics(model, data_set, Y_expected) -> None :
+def log_metrics(model, data_set:pd.DataFrame, Y_expected:pd.Series) -> None :
     Y_pred = model.predict(data_set)
     
     # Root Mean Squared Error
@@ -39,10 +39,7 @@ def log_metrics(model, data_set, Y_expected) -> None :
     mlflow.log_metrics(metrics)
 
 
-# def train(X_train, X_valid, y_train, y_valid):
-#    return None
-
-def train(model_pipeline, X_train, Y_train, model_params) -> None:
+def train(model_pipeline:Pipeline, X_train:pd.DataFrame, Y_train:pd.Series, model_params:dict) -> None:
     model_pipeline.fit(X_train, Y_train)
     
     # Sets the current active experiment to the "house... bla bla" experiment and
@@ -87,7 +84,8 @@ def train(model_pipeline, X_train, Y_train, model_params) -> None:
         log_metrics(model=model_pipeline, data_set=X_train, Y_expected=Y_train)
         mlflow.end_run()
 
-def prepare_model_pipeline(df: pd.DataFrame, model, model_params: dict):
+
+def prepare_model_pipeline(df: pd.DataFrame, model, model_params: dict) -> Pipeline:
     df_cat = df.select_dtypes(include = ['O'])
     df_num = df.select_dtypes(include = ['float64', 'int64'])
     categorical_features = list(df_cat.columns)
@@ -115,7 +113,8 @@ def prepare_model_pipeline(df: pd.DataFrame, model, model_params: dict):
     
     return pipeline
 
-def run_train():
+
+def run_train() -> None:
     X_train, X_valid, y_train, y_valid = get_processed_data()
     # xgb_params = {"booster":"gbtree"}
     # xgb_pipeline = prepare_model_pipeline(X_train, model=xgb.XGBRegressor, model_params=xgb_params)
