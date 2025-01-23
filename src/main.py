@@ -12,6 +12,7 @@ if __name__ == "__main__":
     """
     args = argparse.ArgumentParser()
     args.add_argument("--step", default="")
+    args.add_argument("--data_location", default="")
     parsed_args = args.parse_args()
 
     if parsed_args.step == "data_processing":
@@ -21,6 +22,13 @@ if __name__ == "__main__":
     if parsed_args.step == "select_production_model":
         run_production_model()
     if parsed_args.step == "make_predictions":
-        run_make_predictions()
+        if parsed_args.data_location != "":
+            run_make_predictions(parsed_args.data_location)
+        else:
+            run_make_predictions("")
     # if parsed_args.step == "make_monitoring":
     #     run_model_monitoring()
+    if parsed_args.step == "test_options":
+        if parsed_args.data_location != "":
+            print(f"step = {parsed_args.step}, location = {parsed_args.data_location}")
+        print(f"setp = {parsed_args.step}")

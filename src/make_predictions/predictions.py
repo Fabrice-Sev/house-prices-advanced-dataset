@@ -138,10 +138,13 @@ def save_predictions(predictions: pd.DataFrame) -> None:
     predictions.to_csv(PATH_OUTPUT_PREDICTIONS, index=False)
 
 
-def run_make_predictions() -> None:
-    path_to_dataset_folder = (
-        "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
-    )
+def run_make_predictions(path_to_data_folder) -> None:
+    if path_to_data_folder != "":
+        path_to_dataset_folder = path_to_data_folder
+    else:
+        path_to_dataset_folder = (
+            "E:\Work\ML\Databases\csv_files\house-prices-advanced-dataset"
+        )
     test_file = "test.csv"
 
     X_test = get_test_data(path_to_dataset_folder, test_file)
